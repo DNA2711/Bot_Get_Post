@@ -1,0 +1,69 @@
+Các thuộc tính và phương thức cơ bản trong thư viện Newspaper3-Python:
+
+1.additional_data: Chứa dữ liệu bổ sung nếu có, thường là các thông tin mà thư viện tự động trích xuất từ trang web.
+
+2.article_html: Nội dung HTML của bài báo.
+
+3.authors: Danh sách các tác giả (nếu có) của bài báo.
+
+4.canonical_link: Liên kết chính thức của bài báo, thường là liên kết đến bản gốc.
+
+5.clean_doc: Nội dung đã được làm sạch và loại bỏ các đoạn văn bản không liên quan.
+
+6.clean_top_node: Đoạn văn bản đã được làm sạch từ nút HTML chính của bài báo.
+
+7.config: Cấu hình của thư viện newspaper3k, cho phép bạn tùy chỉnh các thiết đặt.
+
+8.doc: Đối tượng BeautifulSoup của nội dung HTML của bài báo, cho phép bạn thực hiện xử lý nâng cao.
+
+9.download_exception_msg: Thông báo lỗi nếu quá trình tải bài báo gặp vấn đề.
+
+10.download_state: Trạng thái của việc tải bài báo (có thể là 'success' hoặc 'failed').
+
+11.extractor: Trình trích xuất (extractor) được sử dụng để trích xuất thông tin từ trang web cụ thể.
+
+12.html: Nội dung HTML của bài báo (tương tự với article_html).
+
+13.images: Danh sách các hình ảnh được trích xuất từ bài báo.
+
+14.imgs: Danh sách các đối tượng hình ảnh (thường là đối tượng Image).
+
+15.is_parsed: Trạng thái của việc phân tích bài báo (True nếu đã phân tích, False nếu chưa).
+
+16.keywords: Danh sách các từ khóa (tags) mô tả nội dung bài báo.
+
+17.link_hash: Giá trị hash của liên kết bài báo, thường được sử dụng để xác định duy nhất một bài báo.
+
+18.meta_data: Dữ liệu meta của bài báo.
+
+19.meta_description: Mô tả meta của bài báo.
+
+20.meta_favicon: URL của favicon (biểu tượng trang web) của trang web.
+
+21.meta_img: URL của hình ảnh meta của bài báo.
+
+22.meta_keywords: Danh sách các từ khóa meta.
+
+23.meta_lang: Ngôn ngữ của bài báo.
+
+24.movies: Danh sách các video hoặc phương tiện truyền thông khác được trích xuất từ bài báo.
+
+25.publish_date: Ngày công bố bài báo (nếu có).
+
+26.source_url: URL nguồn của bài báo.
+
+27.summary: Tóm tắt của bài báo (nếu có).
+
+28.tags: Danh sách các thẻ (tags) liên quan đến bài báo.
+
+29.text: Nội dung chính của bài báo (đã làm sạch).
+
+30.title: Tiêu đề của bài báo.
+
+31.top_image: URL của hình ảnh đại diện bài báo.
+
+32.top_img: Đối tượng hình ảnh đại diện bài báo (thường là đối tượng Image).
+
+33.top_node: Đối tượng HTML đại diện cho nút chính của bài báo.
+
+34.url: Địa chỉ URL của bài báo.

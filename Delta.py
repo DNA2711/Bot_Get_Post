@@ -1,7 +1,6 @@
 import time
 from selenium import webdriver
 from newspaper import Article
-from bs4 import BeautifulSoup
 import json
 import urllib.parse
 from datetime import datetime
@@ -10,7 +9,6 @@ from selenium.webdriver.common.by import By
 
 def search_google_and_extract(keyword):
     try:
-        # Khởi tạo trình duyệt mà không sử dụng proxy
         driver = webdriver.Chrome()
 
         # Tạo URL tìm kiếm tùy chỉnh với biểu thức tìm kiếm
@@ -22,27 +20,23 @@ def search_google_and_extract(keyword):
         # Chờ cho trang kết quả tải hoàn tất
         time.sleep(5)
 
+        # Lấy danh sách các liên kết đến bài viết trên trang đầu tiên
+        search_results = driver.find_elements(By.CSS_SELECTOR, "div.yuRUbf div span a")
+        search_results = search_results[:2]  # Lấy liên kết đầu tiên và thứ hai
+
         result_array = []
 
-        # Tìm các liên kết đến bài viết trên hai trang đầu tiên
-        search_results = driver.find_elements(By.CSS_SELECTOR, "h3")
-        if len(search_results) < 2:
-            # Nếu không thể tìm thấy các thẻ h3, thử tìm các thẻ div.yuRUbf div span a
-            search_results = driver.find_elements(
-                By.CSS_SELECTOR, "div.yuRUbf div span a"
-            )
-
-        # Lấy liên kết đầu tiên và thứ hai (hoặc tất cả nếu ít hơn 2)
-        search_results = search_results[:2]
-
-        for search_result in search_results:
-            link_url = search_result.get_attribute("href")
-
-            # Mở liên kết trong tab mới
-            driver.execute_script(f"window.open('{link_url}', '_blank');")
-
-            # Chuyển sang tab mới
+        for result in search_results:
+            link_url = result.get_attribute("href")
+            # Tạo một tab mới cho mỗi liên kết và chuyển sang tab mới
+            driver.execute_script("window.open();")
             driver.switch_to.window(driver.window_handles[-1])
+            # Truy cập liên kết trong tab mới
+            driver.get(link_url)
+
+            # Kiểm tra nếu tab đã bị đóng, thì không thực hiện thêm thao tác
+            if driver.current_window_handle not in driver.window_handles:
+                continue
 
             # Sử dụng Newspaper để trích xuất nội dung bài viết
             article = Article(link_url)
@@ -50,17 +44,19 @@ def search_google_and_extract(keyword):
             article.parse()
 
             # Lấy tiêu đề và nội dung bài viết
-            title = article.title if article.title else "No title available"
-            content = article.text.strip() if article.text else "No content available"
+            title = article.title
+            content = article.text.strip()
 
             content = content.replace("\n", " ")
 
             # Thêm thông tin bài viết vào danh sách
             result_array.append({"Title": title, "Content": content})
 
-            # Đóng tab hiện tại và quay lại trang tìm kiếm
+            # Đóng tab hiện tại
             driver.close()
-            driver.switch_to.window(driver.window_handles[0])
+            # Chuyển về tab trước đó (trong trường hợp còn tab khác)
+            if len(driver.window_handles) > 1:
+                driver.switch_to.window(driver.window_handles[-1])
 
         driver.quit()
 

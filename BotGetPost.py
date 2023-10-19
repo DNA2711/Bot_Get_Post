@@ -5,11 +5,12 @@ from newspaper import Article
 import json
 import urllib.parse
 
+
 def search_google_and_extract(keyword, proxy):
     try:
         # Cấu hình proxy
         chrome_options = webdriver.ChromeOptions()
-        chrome_options.add_argument('--proxy-server=http://' + proxy)
+        chrome_options.add_argument("--proxy-server=http://" + proxy)
 
         # Khởi tạo trình duyệt với proxy
         driver = webdriver.Chrome(options=chrome_options)
@@ -25,16 +26,20 @@ def search_google_and_extract(keyword, proxy):
 
         # Lấy danh sách các liên kết đến bài viết trên hai trang đầu tiên
         search_results = driver.find_elements(By.CSS_SELECTOR, "h3")
-        # search_results = search_results[:2]  # Lấy liên kết đầu tiên và thứ hai
+        search_results = search_results[:2]  # Lấy liên kết đầu tiên và thứ hai
 
         result_array = []
 
         # Lấy URL của liên kết đầu tiên và thứ hai
-        first_link_url = search_results[0].find_element(By.XPATH, "..").get_attribute("href")
-        second_link_url = search_results[1].find_element(By.XPATH, "..").get_attribute("href")
+        first_link_url = (
+            search_results[0].find_element(By.XPATH, "..").get_attribute("href")
+        )
+        second_link_url = (
+            search_results[1].find_element(By.XPATH, "..").get_attribute("href")
+        )
 
         # Mở liên kết đầu tiên trong tab mới
-        # driver.execute_script(f"window.open('{first_link_url}', '_blank');")
+        driver.execute_script(f"window.open('{first_link_url}', '_blank');")
 
         # Chuyển sang tab mới
         driver.switch_to.window(driver.window_handles[1])
@@ -49,7 +54,7 @@ def search_google_and_extract(keyword, proxy):
         content = article.text.strip()
 
         # Loại bỏ ký tự '\n' và thay thế thành thẻ '<br>'
-        content = content.replace('\n', ' ')
+        content = content.replace("\n", " ")
 
         # Thêm thông tin bài viết vào danh sách
         result_array.append({"Title": title, "Content": content})
@@ -68,11 +73,19 @@ def search_google_and_extract(keyword, proxy):
         # Lấy tiêu đề và nội dung bài viết
         title = article.title
         content = article.text.strip()
-
-        content = content.replace('\n', ' ')
+        authors = article.authors
+        content = content.replace("\n", " ")
+        publish_date = article.publish_date
 
         # Thêm thông tin bài viết vào danh sách
-        result_array.append({"Title": title, "Content": content})
+        result_array.append(
+            {
+                "Title": title,
+                "Content": content,
+                "authors": authors,
+                "publish_date": publish_date,
+            }
+        )
 
         driver.close()  # Đóng tab hiện tại
 
@@ -86,22 +99,26 @@ def search_google_and_extract(keyword, proxy):
         # Đóng trình duyệt sau khi hoàn thành
         driver.quit()
 
+
 def main():
     try:
-        input_keywords = ['planets in the solar system']
-        proxy = '38.153.192.39:8800'
+        input_keywords = ["thời tiết hôm nay"]
+        proxy = "38.153.192.39:8800"
 
         result_array = []  # Tạo danh sách tổng hợp kết quả từ tất cả các từ khoá
 
         # Thực hiện tìm kiếm và trích xuất nội dung cho từng từ khoá với proxy duy nhất
         for keyword in input_keywords:
-            result_array.extend(search_google_and_extract(keyword, proxy))  # Sử dụng extend để thêm kết quả vào danh sách tổng hợp
+            result_array.extend(
+                search_google_and_extract(keyword, proxy)
+            )  # Sử dụng extend để thêm kết quả vào danh sách tổng hợp
 
         result_json = json.dumps(result_array, indent=4, ensure_ascii=False)
         print(result_json)
 
     except Exception as e:
         print(f"Error: {str(e)}")
+
 
 if __name__ == "__main__":
     main()
